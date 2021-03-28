@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import socket
 import sys
 from speech_recognition import Recognizer, Microphone
@@ -24,20 +27,8 @@ def send(arg):
     print("Connection established !")
     print("Sending command...")
     
-    if(arg == "allume la lumière"):
-        cmd = "light:1"
-    
-    elif(arg == "éteins la lumière"):
-        cmd = "light:0"
-        
-    elif(arg == "allume le chauffage"):
-        cmd = "heat:1"
-        
-    elif(arg == "éteins le chauffage"):
-        cmd = "heat:0"
-    
-    cmd += "\r"
-    socketESP.send(cmd.encode())
+    arg += "\r"
+    socketESP.send(arg.encode())
     socketESP.close()
     print("Connection finished")
 
@@ -70,6 +61,22 @@ while(1):
             except Exception as ex:
                 print(ex)
     
-        send(text)
+        if(text == "allume la lumière"):
+            send("light:1")
+    
+        elif(text == "éteins la lumière"):
+            send("light:0")
+            
+        elif(text.find("allume le chauffage") != -1):
+            stringList = text.split()
+            for s in stringList:
+                if s[0] in "0123456789":
+                    send("heat:" + s)
+            
+        elif(text == "éteins le chauffage"):
+            send("heat:0")
+            
+        else:
+            print("No Result...")
         
 sys.exit()
