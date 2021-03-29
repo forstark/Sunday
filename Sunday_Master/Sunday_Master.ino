@@ -9,11 +9,11 @@ const int MASTER_PORT = 4000;
 WiFiServer server(MASTER_PORT);
 
 WiFiClient calculationUnit;
-IPAddress calculationUnitAddress(192, 168, 1, 24); // To check !
+IPAddress calculationUnitAddress(192, 168, 131, 80); // To check !
 const int calculationUnitPort = 5000;
 
 WiFiClient slave1;
-IPAddress slave1Address(192, 168, 1, 101);
+IPAddress slave1Address(192, 168, 131, 101);
 const int slave1Port = 5001;
 
 //const char *mqttServer = "iot.fr-par.scw.cloud";
@@ -24,12 +24,11 @@ const char *mqttPassword = "";
 WiFiClient mqttClient;
 PubSubClient mqttPubClient(mqttClient);
 
-const char* ssid = "Freebox-53DBE7";
-const char* password = "cd5=GVnbAEW)";
-IPAddress ip(192, 168, 1, 100);
-IPAddress gateway(192, 168, 1, 1);
+const char* ssid = "Pixel_1621";
+const char* password = "e93bc9a01bw82jfo2";
+IPAddress ip(192, 168, 131, 100);
+IPAddress gateway(192, 168, 131, 162);
 IPAddress subnet(255, 255, 255, 0);
-IPAddress dns(192, 168, 1, 1);
 
 const int pinButton = 4;
 #define DEBOUNCE_TIME 250
@@ -39,7 +38,7 @@ void setup(void)
 {
   Serial.begin(BAUDRATE);
 
-  WiFi.config(ip, dns, gateway, subnet);
+  WiFi.config(ip, gateway, subnet);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) 
   {
@@ -78,7 +77,11 @@ void setup(void)
 
 void loop(void)
 { 
-  mqttPubClient.loop();
+  if(!mqttPubClient.loop())
+  {
+    mqttPubClient.connect(nom.c_str(), mqttUser, mqttPassword);
+  }
+  
   clientRequest();
   
   if(digitalRead(pinButton) == HIGH)
@@ -86,7 +89,7 @@ void loop(void)
     if(millis() - DEBOUNCE_TIME >= DebounceTimer)
     {
       DebounceTimer = millis();
-      
+
       connectCalculationUnit();
     }
   }
@@ -109,7 +112,7 @@ void clientRequest(void)
       String request = client.readStringUntil('\r');
       Serial.println(request);
       
-      client.stop();
+      //client.stop();
 
       handleRequest(request);
     }
@@ -120,11 +123,17 @@ void handleRequest(String r)
 {
   Serial.println("Sending data...");
 
-  mqttPubClient.publish("room/heater", r.substring(r.indexOf(":") + 1).c_str());
+  if(r.indexOf("heat") == 0)
+  {
+    Serial.println(r.substring(r.indexOf(":") + 1).c_str());
+    mqttPubClient.publish("room/heater", r.substring(r.indexOf(":") + 1).c_str());
+    mqttPubClient.subscribe("room/heater");
+  }
     
   if(slave1.connect(slave1Address, slave1Port))
   {
     slave1.println(r);
+    Serial.println("Success !");
   }
 
   else
@@ -132,7 +141,7 @@ void handleRequest(String r)
     Serial.println("ERROR : Connection failed");
   }
 
-  slave1.stop();
+  //slave1.stop();
 }
 
 void connectCalculationUnit(void)

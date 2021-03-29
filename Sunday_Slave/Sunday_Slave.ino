@@ -5,16 +5,16 @@
 #define MASTER_PORT 4000
 
 const String nom = "IOT_Slave1";
-const char* ssid = "Freebox-53DBE7";
-const char* password = "cd5=GVnbAEW)";
+const char* ssid = "Pixel_1621";
+const char* password = "e93bc9a01bw82jfo2";
 
 WiFiServer server(SERVER_PORT);
 
 WiFiClient master;
-IPAddress masterAddress(192, 168, 1, 100);
+IPAddress masterAddress(192, 168, 131, 100);
 
-IPAddress ip(192, 168, 1, 101);
-IPAddress gateway(192, 168, 1, 1);
+IPAddress ip(192, 168, 131, 101);
+IPAddress gateway(192, 168, 131, 162);
 IPAddress subnet(255, 255, 255, 0);
 
 void setup(void)

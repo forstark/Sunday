@@ -8,9 +8,9 @@ recognizer = Recognizer()
     
 text = ""
 
-SERVER_ADDRESS = "192.168.1.24" # To check !
+SERVER_ADDRESS = "192.168.131.80" # To check !
 SERVER_PORT = 5000
-ESP_ADDRESS = "192.168.1.100"
+ESP_ADDRESS = "192.168.131.100"
 ESP_PORT = 4000
 
 socketServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
