@@ -1,0 +1,5 @@
+Change Component Designator: OldDesignator=R5 NewDesignator=R8
+Change Component Designator: OldDesignator=R6 NewDesignator=R9
+Added Member To Class: ClassName=Sunday Member=Component R8 RES
+Added Member To Class: ClassName=Sunday Member=Component R9 RES
+Added Room: Name=Sunday
